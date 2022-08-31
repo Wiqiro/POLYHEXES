@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+//TODO: palette loader
 enum Color {
    RED,
    LIGHT_RED,

@@ -66,7 +66,6 @@ bool is_colliding(struct Map map, struct Polyhex poly) {
       struct AVect test = {poly.hex[i].q + poly.pos.q, poly.hex[i].r + poly.pos.r};
       if (is_in_map(map, test)) {
          is_colliding = (map_get(map, test.q, test.r).col != NO_COLOR);
-         //printf("%d   %d %d\n", map_get(map, test.q, test.r).col, test.r, test.q);
       }
       i++;
    }

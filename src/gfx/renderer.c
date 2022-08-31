@@ -70,7 +70,6 @@ static void _render_hex(struct Renderer* self, struct AVect pos, enum Color col)
       shader_set_mat3(self->shader, "model", model);
       glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, (void*)0);
       
-
       switch (col) {
       case RED:
          shader_set_color(self->shader, "color", 0.96f, 0.5f, 0.58f);
@@ -140,13 +139,19 @@ void render(struct Renderer* self, struct Map map, struct Polyhex poly) {
 
    struct AVect hex_pos;
    
-
-   for (int r = 0; r < map.rmax; r++) {
+   for (hex_pos.r = -map.radius; hex_pos.r <= map.radius; hex_pos.r++) {
+      for (hex_pos.q = -map.radius; hex_pos.q <= map.radius; hex_pos.q++) {
+         if (is_in_map(map, hex_pos)) {
+            _render_hex(self, hex_pos, map_get(map, hex_pos.q, hex_pos.r).col);
+         }
+      }
+   }
+   /* for (int r = 0; r < map.rmax; r++) {
       for (int q = 0; q < map.row[r].size; q++) {
          hex_pos = (struct AVect) {q + map.row[r].qmin - map.center.q, r - map.center.r};
          _render_hex(self, hex_pos, map.row[r].hex[q].col);
       }
-   }
+   } */
 
    for (int i = 0; i < poly.order; i++) {
       hex_pos = (struct AVect) {poly.hex[i].q + poly.pos.q, poly.hex[i].r + poly.pos.r};
