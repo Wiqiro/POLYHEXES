@@ -26,5 +26,9 @@ bool is_colliding(struct Map map, struct Polyhex poly);
 
 bool map_merge_poly(struct Map map, struct Polyhex poly);
 
+void map_rotate_cw(struct Map map);
+
+void map_rotate_ccw(struct Map map);
+
 
 #endif

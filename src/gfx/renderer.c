@@ -54,22 +54,17 @@ bool renderer_init(struct Renderer* self, int16_t width, int16_t height, int16_t
 }
 
 
-static void _render_hex(struct Renderer* self, struct AVect pos, enum Color col) {
+static void _render_hex(struct Renderer* self, struct AVect pos, int16_t hex_size, enum Color col) {
    mat3 model;
    vec2 offset = {(float) (pos.q + pos.r / 2.0f) * sqrt(3) * (float) (self->hex_size - self->border_size / 2),
                   (float) (-pos.r) * 1.5f * (float) (self->hex_size - self->border_size / 2)};
 
-   if (col != NO_COLOR) {
+   /* if (col != NO_COLOR) {
       shader_set_color(self->shader, "color", 0.0f, 0.0f, 0.0f);
    } else {
       shader_set_color(self->shader, "color", 0.65f, 0.65f, 0.65f);
-   }
-      glm_mat3_identity(model);
-      glm_translate2d(model, offset);
-      glm_scale2d_uni(model, self->hex_size);
-      shader_set_mat3(self->shader, "model", model);
-      glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, (void*)0);
-      
+   } */
+
       switch (col) {
       case RED:
          shader_set_color(self->shader, "color", 0.96f, 0.5f, 0.58f);
@@ -110,6 +105,9 @@ static void _render_hex(struct Renderer* self, struct AVect pos, enum Color col)
       case BLACK:
          shader_set_color(self->shader, "color", 0.09f, 0.09f, 0.09f);
          break;
+      case LIGHT_GREY:
+         shader_set_color(self->shader, "color", 0.5, 0.5f, 0.5f);
+         break;
       default:
          shader_set_color(self->shader, "color", 0.15, 0.15, 0.15);
          break;
@@ -117,7 +115,7 @@ static void _render_hex(struct Renderer* self, struct AVect pos, enum Color col)
 
       glm_mat3_identity(model);
       glm_translate2d(model, offset);
-      glm_scale2d_uni(model, self->hex_size - self->border_size);
+      glm_scale2d_uni(model, hex_size);
       shader_set_mat3(self->shader, "model", model);
       glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, (void*)0);
 }
@@ -131,7 +129,7 @@ static void _clear_bg(double r, double g, double b) {
 
 
 
-void render(struct Renderer* self, struct Map map, struct Polyhex poly) {
+void render(struct Renderer* self, struct Map map, struct Polyhex poly, struct Polyhex poly2) {
    vao_bind(self->hex_VBO);
    ebo_bind(self->EBO);
 
@@ -142,20 +140,34 @@ void render(struct Renderer* self, struct Map map, struct Polyhex poly) {
    for (hex_pos.r = -map.radius; hex_pos.r <= map.radius; hex_pos.r++) {
       for (hex_pos.q = -map.radius; hex_pos.q <= map.radius; hex_pos.q++) {
          if (is_in_map(map, hex_pos)) {
-            _render_hex(self, hex_pos, map_get(map, hex_pos.q, hex_pos.r).col);
+            if (map_get(map, hex_pos.q, hex_pos.r).col == NO_COLOR) {
+               _render_hex(self, hex_pos, self->hex_size, LIGHT_GREY);
+            } else {
+               _render_hex(self, hex_pos, self->hex_size, BLACK);
+            }
          }
       }
    }
-   /* for (int r = 0; r < map.rmax; r++) {
-      for (int q = 0; q < map.row[r].size; q++) {
-         hex_pos = (struct AVect) {q + map.row[r].qmin - map.center.q, r - map.center.r};
-         _render_hex(self, hex_pos, map.row[r].hex[q].col);
+   for (hex_pos.r = -map.radius; hex_pos.r <= map.radius; hex_pos.r++) {
+      for (hex_pos.q = -map.radius; hex_pos.q <= map.radius; hex_pos.q++) {
+         if (is_in_map(map, hex_pos)) {
+            if (map_get(map, hex_pos.q, hex_pos.r).col != NO_COLOR) {
+               _render_hex(self, hex_pos, self->hex_size, BLACK);
+            }
+            _render_hex(self, hex_pos, self->hex_size - self->border_size, map_get(map, hex_pos.q, hex_pos.r).col);
+         }
       }
-   } */
+   }
 
    for (int i = 0; i < poly.order; i++) {
       hex_pos = (struct AVect) {poly.hex[i].q + poly.pos.q, poly.hex[i].r + poly.pos.r};
-      _render_hex(self, hex_pos, poly.col);
+      _render_hex(self, hex_pos, self->hex_size, BLACK);
+      _render_hex(self, hex_pos, self->hex_size - self->border_size, poly.col);
+   }
+   for (int i = 0; i < poly2.order; i++) {
+      hex_pos = (struct AVect) {poly2.hex[i].q + poly2.pos.q, poly2.hex[i].r + poly2.pos.r};
+      _render_hex(self, hex_pos, self->hex_size, BLACK);
+      _render_hex(self, hex_pos, self->hex_size - self->border_size, poly2.col);
    }
 }
 

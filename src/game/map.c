@@ -84,3 +84,38 @@ bool map_merge_poly(struct Map map, struct Polyhex poly) {
    }
    return is_out_of_map;
 }
+
+
+//TODO: collision check
+void map_rotate_cw(struct Map map) {
+   for (int q = 1; q <= map.radius; q++) {
+      for (int r = 0; r <= map.radius - q; r++) {
+         int16_t s = -q - r;
+         struct Hex tmp = map_get(map, q, r);
+
+         *map_ptr(map, q, r) = *map_ptr(map, -s, -q);
+         *map_ptr(map, -s, -q) = *map_ptr(map, r, s);
+         *map_ptr(map, r, s) = *map_ptr(map, -q, -r);
+         *map_ptr(map, -q, -r) = *map_ptr(map, s, q);
+         *map_ptr(map, s, q) = *map_ptr(map, -r, -s);
+         *map_ptr(map, -r, -s) = tmp;
+      }
+   }
+}
+
+void map_rotate_ccw(struct Map map) {
+   for (int q = 1; q <= map.radius; q++) {
+      for (int r = 0; r <= map.radius - q; r++) {
+         int16_t s = -q - r;
+         struct Hex tmp = map_get(map, q, r);
+
+         *map_ptr(map, q, r) = *map_ptr(map, -r, -s);
+         *map_ptr(map, -r, -s) = *map_ptr(map, s, q);
+         *map_ptr(map, s, q) = *map_ptr(map, -q, -r);
+         *map_ptr(map, -q, -r) = *map_ptr(map, r, s);
+         *map_ptr(map, r, s) = *map_ptr(map, -s, -q);
+         *map_ptr(map, -s, -q) = tmp;
+
+      }
+   }
+}

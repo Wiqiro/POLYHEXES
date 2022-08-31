@@ -20,6 +20,7 @@ enum Color {
 
    COLOR_TOTAL,
    BLACK,
+   LIGHT_GREY,
    NO_COLOR,
 };
 

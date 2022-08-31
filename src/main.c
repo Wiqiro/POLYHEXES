@@ -38,8 +38,10 @@ int main(int argc, char* argv[]) {
 
    struct Map map = map_create_and_initialize(10);
    
-   struct Polyhex poly;
+   struct Polyhex poly, poly2;
    poly_load(&poly, poly_file, 15, 0);
+   poly_load(&poly2, poly_file, -15, 0);
+
 
    while (glfwWindowShouldClose(window.window) == false) {
 
@@ -48,11 +50,17 @@ int main(int argc, char* argv[]) {
             map_merge_poly(map, poly);
             poly_load(&poly, poly_file, 15, 0);
          }
-         poly_rotate_cw(&poly, map);
+         if (!poly_move(&poly2, map, 1, 0)) {
+            map_merge_poly(map, poly2);
+            poly_load(&poly2, poly_file, -15, 0);
+         }
+         /* poly_rotate_cw(&poly, map);
+         poly_rotate_cw(&poly2, map); */
+         map_rotate_ccw(map);
          timer  = clock();
       }
 
-      render(&renderer, map, poly);
+      render(&renderer, map, poly, poly2);
   
       glfwSwapBuffers(window.window);
       glfwPollEvents();
