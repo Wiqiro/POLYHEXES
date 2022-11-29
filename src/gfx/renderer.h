@@ -26,9 +26,7 @@ struct Renderer {
 };
 
 bool renderer_init(struct Renderer* self, int16_t width, int16_t height, int16_t hex_size, int16_t border_size);
-
 void render(struct Renderer* self, struct HexMap map, struct Polyhex poly, struct Polyhex poly2);
-
 void renderer_destroy(struct Renderer self);
 
 

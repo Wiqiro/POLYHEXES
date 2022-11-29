@@ -6,7 +6,6 @@
 
 #define GLFW_INCLUDE_NONE
 
-
 #include "game/game_state.h"
 #include "inputs/callbacks.h"
 
@@ -31,7 +30,6 @@ int main(int argc, char* argv[]) {
 
    struct GameState game = game_new(poly_file);   
    
-
    struct Window window;
    window_init(&window, 1920, 1080);
 
@@ -41,14 +39,11 @@ int main(int argc, char* argv[]) {
       enum Button controls[CONTROLS_COUNT];
       controls_init(controls);
 
-   while (glfwWindowShouldClose(window.window) == false) {
+   while (!glfwWindowShouldClose(window.window)) {
 
       game_update(&game, poly_file);
-      
       handle_events(window, controls, &game);
-      
     // poly_move_down(&game.poly[0], &game.poly[1], game.map);
-
 
       render(&renderer, game.map, game.poly[1], game.poly[0]);
   

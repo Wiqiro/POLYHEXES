@@ -14,8 +14,8 @@ static char* _get_file_content(const char* path) {
    rewind(file);
 
    char* content = (char*) calloc(size, sizeof(char));
-   fread(content, 1, size, file);
-
+   fread(content, 1, size-1, file);
+   //seems like it is not 100% working on linux: shader files need to have an extra linebreak at the end
    fclose(file);
    return content;
 }
