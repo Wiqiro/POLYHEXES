@@ -34,7 +34,7 @@ struct HexMap map_create_and_initialize(int16_t size) {
       map.rmax = size * 2 - 1;
       for (int r = 0; r < map.rmax; r++) {
          for (int q = 0; q < map.row[r].size; q++) {
-            map.row[r].hex[q].col = NO_COLOR ;
+            map.row[r].hex[q].col = NO_COLOR;
          }
       }
       map.row[map.rmax / 2].hex[map.rmax / 2].col = BLACK;

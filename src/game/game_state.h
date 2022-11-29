@@ -25,6 +25,9 @@ struct GameState {
 
 struct GameState game_new(FILE* file);
 
-void game_update(struct GameState* game);
+void game_update(struct GameState* game, FILE* file);
+
+void game_speedfall_on(struct GameState* game);
+void game_speedfall_off(struct GameState* game);
 
 #endif

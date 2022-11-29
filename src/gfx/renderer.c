@@ -171,6 +171,9 @@ void render(struct Renderer* self, struct HexMap map, struct Polyhex poly, struc
    }
 }
 
+
+
+
 void renderer_destroy(struct Renderer self) {
    vao_delete(self.VAO);
    vbo_delete(self.hex_VBO);

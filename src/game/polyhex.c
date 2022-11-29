@@ -144,3 +144,15 @@ void poly_rotate_ccw(struct Polyhex* poly, struct HexMap map) {
       free(backup);
    }
 }
+
+void poly_move_up(struct Polyhex* poly_l, struct Polyhex* poly_r, struct HexMap map) {
+   if (poly_move(poly_l, map, 0, -1)) {
+      poly_move(poly_r, map, 1, -1);
+   }
+}
+
+void poly_move_down(struct Polyhex* poly_l, struct Polyhex* poly_r, struct HexMap map) {
+   if (poly_move(poly_l, map, -1 ,1)) {
+      poly_move(poly_r, map, 0, 1);
+   }
+}
