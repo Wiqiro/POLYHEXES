@@ -7,6 +7,8 @@
 #define GLFW_INCLUDE_NONE
 
 #include "game/map.h"
+#include "game/game_state.h"
+
 
 #include "gfx/gfx.h"
 #include "gfx/window.h"
@@ -28,39 +30,62 @@ int main(int argc, char* argv[]) {
       return EXIT_FAILURE;
    }
 
+   struct GameState game = game_new(poly_file);   
+
 
    struct Window window;
    window_init(&window, 1920, 1080);
 
    struct Renderer renderer;
-   renderer_init(&renderer, 1920, 1080, 60, 4);
+   renderer_init(&renderer, 1920, 1080, 60, 6);
 
 
-   struct Map map = map_create_and_initialize(10);
+   struct HexMap map = map_create_and_initialize(10);
    
-   struct Polyhex poly, poly2;
-   poly_load(&poly, poly_file, 15, 0);
-   poly_load(&poly2, poly_file, -15, 0);
-
+   struct Polyhex game.poly_r, game.poly_l;
+   poly_load(&game.poly_r, poly_file, 15, 0);
+   poly_load(&game.poly_l, poly_file, -15, 0);
 
    while (glfwWindowShouldClose(window.window) == false) {
 
       if (clock() - timer > 400) {
-         if (!poly_move(&poly, map, -1, 0)) {
-            map_merge_poly(map, poly);
-            poly_load(&poly, poly_file, 15, 0);
+         if (!poly_move(&game.poly_r, map, -1, 0)) {
+            map_merge_poly(map, game.poly_r);
+            poly_load(&game.poly_r, poly_file, 15, 0);
          }
-         if (!poly_move(&poly2, map, 1, 0)) {
-            map_merge_poly(map, poly2);
-            poly_load(&poly2, poly_file, -15, 0);
+         if (!poly_move(&game.poly_l, map, 1, 0)) {
+            map_merge_poly(map, game.poly_l);
+            poly_load(&game.poly_l, poly_file, -15, 0);
          }
-         /* poly_rotate_cw(&poly, map);
-         poly_rotate_cw(&poly2, map); */
-         map_rotate_ccw(map);
          timer  = clock();
       }
+      
+      if (glfwGetKey(window.window, GLFW_KEY_D) == GLFW_PRESS) {
+         map_rotate_cw(map);
+      }
+      //TODO: EU keyboard + cooldown
+      if (glfwGetKey(window.window, GLFW_KEY_A) == GLFW_PRESS) {
+         map_rotate_cw(map);
+      }
+      if (glfwGetMouseButton(window.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+         if (!glfwGetKey(window.window, GLFW_KEY_LEFT_CONTROL)) {
+            poly_rotate_cw(&game.poly_l, map);
+         } else {
+            poly_rotate_ccw(&game.poly_l, map);
+         }
+      }
+      if (glfwGetMouseButton(window.window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+         if (!glfwGetKey(window.window, GLFW_KEY_LEFT_CONTROL)) {
+            poly_rotate_cw(&game.poly_r, map);
+         } else {
+            poly_rotate_ccw(&game.poly_r, map);
+         }
+      }
+      
+     
 
-      render(&renderer, map, poly, poly2);
+
+      render(&renderer, map, game.poly_r, game.poly_l);
   
       glfwSwapBuffers(window.window);
       glfwPollEvents();

@@ -52,7 +52,7 @@ struct HexArray {
 };
 
 
-struct Map {
+struct HexMap {
    struct HexArray* row;
    int16_t rmax;
    int16_t radius;

@@ -74,14 +74,9 @@ bool poly_load(struct Polyhex* poly, FILE* file, int16_t q, int16_t r) {
       }
 
       fscanf(file, "/%100[^!]", buffer);
-      printf("%s (%d)\n", buffer, line);
-
       char* token = strtok(buffer, "/");
 
-      poly->col = rand()%COLOR_TOTAL;
-
       int i = 0;
-
       while (token != NULL && i < order) {
          int q, r;
          sscanf(token, "%d,%d", &q, &r);
@@ -91,23 +86,24 @@ bool poly_load(struct Polyhex* poly, FILE* file, int16_t q, int16_t r) {
          i++;
       }
 
+      poly->col = rand()%COLOR_TOTAL;
      _poly_rotate(*poly, rand()%6);
       if (rand()%2 == 0) {
          _poly_invert(*poly);
       }
+      poly->pos = (struct AVect) {q, r};
+      poly->order = 4;
 
-
+      return true;
+   } else {
+      return false;
    }
 
-   poly->pos = (struct AVect) {q, r};
-   poly->order = 4;
-
-   return true;
 }
 
 
 
-bool poly_move(struct Polyhex* poly, struct Map map, int16_t dq, int16_t dr) {
+bool poly_move(struct Polyhex* poly, struct HexMap map, int16_t dq, int16_t dr) {
    poly->pos.q += dq;
    poly->pos.r += dr;
    if (is_colliding(map, *poly)) {
@@ -121,7 +117,7 @@ bool poly_move(struct Polyhex* poly, struct Map map, int16_t dq, int16_t dr) {
 
 
 
-void poly_rotate_cw(struct Polyhex* poly, struct Map map) {
+void poly_rotate_cw(struct Polyhex* poly, struct HexMap map) {
    struct AVect* backup = (struct AVect*) malloc(poly->order * sizeof(struct AVect));
    for (int i = 0; i < poly->order; i++) {
       backup[i] = poly->hex[i];
@@ -135,7 +131,7 @@ void poly_rotate_cw(struct Polyhex* poly, struct Map map) {
    }
 }
 
-void poly_rotate_ccw(struct Polyhex* poly, struct Map map) {
+void poly_rotate_ccw(struct Polyhex* poly, struct HexMap map) {
    struct AVect* backup = (struct AVect*) malloc(poly->order * sizeof(struct AVect));
    for (int i = 0; i < poly->order; i++) {
       backup[i] = poly->hex[i];

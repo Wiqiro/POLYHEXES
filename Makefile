@@ -1,6 +1,6 @@
 #OBJS specifies which files to compile as part of the project
 #OBJS = main.c map.c polyomino.c
-OBJS = src/main.c src/gfx/window.c src/gfx/shaders.c src/gfx/renderer.c src/gfx/vao.c src/gfx/vbo.c src/gfx/ebo.c src/game/map.c src/game/hex.c src/game/polyhex.c
+OBJS = src/main.c src/gfx/window.c src/gfx/shaders.c src/gfx/renderer.c src/gfx/vao.c src/gfx/vbo.c src/gfx/ebo.c src/game/map.c src/game/hex.c src/game/polyhex.c src/game/game_state.x
 
 #CC specifies which compiler we're using
 CC = gcc

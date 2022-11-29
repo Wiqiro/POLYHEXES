@@ -129,7 +129,7 @@ static void _clear_bg(double r, double g, double b) {
 
 
 
-void render(struct Renderer* self, struct Map map, struct Polyhex poly, struct Polyhex poly2) {
+void render(struct Renderer* self, struct HexMap map, struct Polyhex poly, struct Polyhex poly2) {
    vao_bind(self->hex_VBO);
    ebo_bind(self->EBO);
 
